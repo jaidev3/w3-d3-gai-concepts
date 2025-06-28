@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Coding Agent Recommender</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            padding: 40px;
+        }
+        
+        .input-section {
+            margin-bottom: 40px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .results {
+            margin-top: 40px;
+        }
+        
+        .task-analysis {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .task-analysis h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .analysis-item {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .recommendations {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .recommendation-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 25px;
+            background: white;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .agent-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .fit-score {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .agent-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .reasoning {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 15px;
+        }
+        
+        .agent-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .detail-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .detail-section h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin: 2px;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+        }
+
+        .api-info {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            margin-bottom: 20px;
+        }
+        
+        .api-info a {
+            color: #155724;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Coding Agent Recommender</h1>
+            <p>Find the perfect AI coding assistant for your development needs</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="api-info">
+                <strong>🚀 FastAPI Powered!</strong><br>
+                Interactive API docs available at <a href="/docs" target="_blank">/docs</a> | 
+                Health check: <a href="/api/health" target="_blank">/api/health</a>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="taskDescription">Describe your coding task or project:</label>
+                    <textarea 
+                        id="taskDescription" 
+                        placeholder="Example: I need to build a REST API using FastAPI and Python that handles user authentication and connects to a PostgreSQL database. The project should be completed quickly and I'm intermediate with Python but new to FastAPI."
+                    ></textarea>
+                </div>
+                <button class="btn" onclick="getRecommendations()">Get Recommendations</button>
+            </div>
+            
+            <div id="loading" class="loading" style="display: none;">
+                <p>🔍 Analyzing your task and finding the best AI coding agents...</p>
+            </div>
+            
+            <div id="error" class="error" style="display: none;"></div>
+            
+            <div id="results" class="results" style="display: none;">
+                <div id="taskAnalysis" class="task-analysis"></div>
+                <div id="recommendations" class="recommendations"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function getRecommendations() {
+            const taskDescription = document.getElementById('taskDescription').value.trim();
+            
+            if (!taskDescription) {
+                showError('Please enter a task description');
+                return;
+            }
+            
+            showLoading(true);
+            hideError();
+            hideResults();
+            
+            try {
+                const response = await fetch('/api/recommend', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        task_description: taskDescription
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResults(data);
+                } else {
+                    showError(data.detail || 'An error occurred');
+                }
+            } catch (error) {
+                showError('Network error: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        function displayResults(data) {
+            displayTaskAnalysis(data.task_analysis);
+            displayRecommendations(data.recommendations);
+            showResults();
+        }
+        
+        function displayTaskAnalysis(analysis) {
+            const html = `
+                <h3>📊 Task Analysis</h3>
+                <div class="analysis-grid">
+                    <div class="analysis-item">
+                        <strong>Task Type:</strong><br>${analysis.task_type}
+                    </div>
+                    <div class="analysis-item">
+                        <strong>Complexity:</strong><br>${analysis.complexity}
+                    </div>
+                    <div class="analysis-item">
+                        <strong>Languages:</strong><br>${analysis.languages.join(', ')}
+                    </div>
+                    <div class="analysis-item">
+                        <strong>Domain:</strong><br>${analysis.domain}
+                    </div>
+                    <div class="analysis-item">
+                        <strong>Urgency:</strong><br>${analysis.urgency}
+                    </div>
+                </div>
+            `;
+            document.getElementById('taskAnalysis').innerHTML = html;
+        }
+        
+        function displayRecommendations(recommendations) {
+            const html = recommendations.map((rec, index) => `
+                <div class="recommendation-card">
+                    <div class="agent-header">
+                        <div class="agent-name">${getRankEmoji(index)} ${rec.agent.name}</div>
+                        <div class="fit-score">${rec.fit_percentage}% Match</div>
+                    </div>
+                    
+                    <div class="agent-description">${rec.agent.description}</div>
+                    
+                    <div class="reasoning">
+                        <strong>Why this recommendation:</strong><br>
+                        ${rec.reasoning}
+                    </div>
+                    
+                    <div class="agent-details">
+                        <div class="detail-section">
+                            <h4>🎯 Best For</h4>
+                            ${rec.agent.best_for.map(item => `<span class="tag">${item}</span>`).join('')}
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>💻 Languages</h4>
+                            ${rec.agent.languages.map(lang => `<span class="tag">${lang}</span>`).join('')}
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>⚡ Strengths</h4>
+                            ${rec.agent.strengths.map(strength => `<span class="tag">${strength}</span>`).join('')}
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>💰 Pricing</h4>
+                            ${rec.agent.pricing}
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>📈 Learning Curve</h4>
+                            ${rec.agent.learning_curve}
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>🔧 Platforms</h4>
+                            ${rec.agent.platforms.map(platform => `<span class="tag">${platform}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('recommendations').innerHTML = html;
+        }
+        
+        function getRankEmoji(index) {
+            const emojis = ['🥇', '🥈', '🥉'];
+            return emojis[index] || '🏆';
+        }
+        
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+        
+        function showResults() {
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function hideResults() {
+            document.getElementById('results').style.display = 'none';
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+        
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
+        }
+        
+        // Allow Enter key to submit (Ctrl+Enter for newline)
+        document.getElementById('taskDescription').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.ctrlKey) {
+                e.preventDefault();
+                getRecommendations();
+            }
+        });
+    </script>
+</body>
+</html>

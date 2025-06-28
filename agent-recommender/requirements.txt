@@ -1,0 +1,22 @@
+# Core Web Framework
+fastapi==0.109.0
+uvicorn==0.27.0
+
+# Machine Learning and NLP
+scikit-learn==1.2.2
+spacy==3.5.2
+numpy==1.24.3
+
+# Data Handling
+pydantic==2.6.1
+
+# Optional: OpenAI Integration (currently commented out)
+# openai==1.0.0
+
+# Development and Testing
+pytest==7.3.1
+httpx==0.24.1  # For FastAPI testing
+
+# Additional Utilities
+typing-extensions==4.5.0
+dataclasses==0.8; python_version < '3.7' 
