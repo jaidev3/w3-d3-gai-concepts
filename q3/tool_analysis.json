@@ -1,0 +1,14 @@
+[
+  {
+    "tool": "GitHub Copilot",
+    "base_prompt": "",
+    "optimized_prompt": "Define a function named 'calculate_area' that takes in two parameters: 'length' (float) and 'width' (float), and returns the product of the two as the area. Include a comment with an example input and output.",
+    "explanation": "The prompt has been rewritten to include imperative language, specific parameter names, type signatures, and an example in a short comment format to leverage GitHub Copilot's strengths."
+  },
+  {
+    "tool": "Cursor",
+    "base_prompt": "",
+    "optimized_prompt": "As a Cursor AI coding assistant, I need to generate a multi-step implementation plan for refactoring a specific file structure in a project. The plan should include creating new files, updating existing files, and providing code snippets with explicit language specifications and markdown code fences.",
+    "explanation": "I have optimized the prompt for Cursor AI by focusing on its strengths in handling multi-step conversation and file-generating tasks. The prompt now emphasizes the need for creating a detailed plan for refactoring a project structure, including specific instructions for creating and updating files with code snippets in markdown format. This will help Cursor AI understand the desired file structure and code changes more effectively."
+  }
+]
